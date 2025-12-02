@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-5 fw-bold"><i class="fas fa-home me-3 text-primary"></i>Панель управления</h1>
+        <p class="lead text-muted">Управление складскими запасами в реальном времени</p>
+    </div>
+    <div class="d-none d-md-block">
+        <span class="badge bg-primary fs-6 p-2">
+            <i class="fas fa-calendar-alt me-1"></i> @DateTime.Now.ToString("dddd, dd MMMM yyyy")
+        </span>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card card-dashboard stat-card border-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Всего товаров</p>
+                        <h2 class="fw-bold mb-0">@ViewBag.TotalProducts</h2>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i> @(ViewBag.NewProducts ?? 0) новых за последний месяц
+                        </small>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-boxes fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top d-flex justify-content-between">
+                <small>В каталоге</small>
+                <a asp-controller="Products" asp-action="Index" class="small text-primary">Подробнее <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-dashboard stat-card border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Операций прихода</p>
+                        <h2 class="fw-bold mb-0">@ViewBag.TotalArrivals</h2>
+                        <small class="text-success">
+                            <i class="fas fa-plus me-1"></i> @(ViewBag.NewArrivals ?? 0) за последние 7 дней
+                        </small>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-arrow-alt-circle-down fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top d-flex justify-content-between">
+                <small>За всё время</small>
+                <a asp-controller="ProductArrivals" asp-action="Index" class="small text-success">Подробнее <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-dashboard stat-card border-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Операций расхода</p>
+                        <h2 class="fw-bold mb-0">@ViewBag.TotalExpenses</h2>
+                        <small class="text-danger">
+                            <i class="fas fa-minus me-1"></i> @(ViewBag.NewExpenses ?? 0) за последние 7 дней
+                        </small>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-arrow-alt-circle-up fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top d-flex justify-content-between">
+                <small>За всё время</small>
+                <a asp-controller="ProductExpenses" asp-action="Index" class="small text-danger">Подробнее <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card card-dashboard stat-card border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Товаров с низким остатком</p>
+                        <h2 class="fw-bold mb-0">@ViewBag.LowStockItems</h2>
+                        <small class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Требуют внимания
+                        </small>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-exclamation-circle fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top d-flex justify-content-between">
+                <small>Остаток < 5 единиц</small>
+                <a asp-controller="Stock" asp-action="Index" class="small text-warning">Подробнее <i class="fas fa-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8 mb-3">
+        <div class="card card-dashboard">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="fas fa-chart-line me-2 text-primary"></i>Движение товаров за последние 30 дней</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="periodDropdown" data-bs-toggle="dropdown">
+                        Последние 30 дней
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="inventoryChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card card-dashboard">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Товары, требующие внимания</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.LowStockItemsList != null && ((IEnumerable<Api.Models.ViewModels.StockViewModel>)ViewBag.LowStockItemsList).Any())
+                {
+                    <div class="list-group">
+                        @foreach (var item in (IEnumerable<Api.Models.ViewModels.StockViewModel>)ViewBag.LowStockItemsList)
+                        {
+                            <a asp-controller="Stock" asp-action="Details" asp-route-id="@item.Product.Id"
+                               class="list-group-item list-group-item-action border-start border-4 @(item.CurrentStock <= 0 ? "border-danger" : "border-warning")">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">@item.Product.Title</h6>
+                                    <span class="badge @(item.CurrentStock <= 0 ? "bg-danger" : "bg-warning text-dark")">Остаток: @item.CurrentStock</span>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span>Последний приход: @(item.LastArrival?.ToString("dd.MM.yyyy") ?? "нет данных")</span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <p class="text-muted">Нет товаров с критически низким остатком</p>
+                    </div>
+                }
+            </div>
+            <div class="card-footer bg-transparent border-top text-end">
+                <a asp-controller="Stock" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                    Все остатки <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card card-dashboard">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="fas fa-history me-2 text-info"></i>Последние операции</h5>
+                <div>
+                    <a asp-controller="ProductArrivals" asp-action="Index" class="btn btn-sm btn-success me-2">
+                        <i class="fas fa-arrow-alt-circle-down me-1"></i> Все приходы
+                    </a>
+                    <a asp-controller="ProductExpenses" asp-action="Index" class="btn btn-sm btn-danger">
+                        <i class="fas fa-arrow-alt-circle-up me-1"></i> Все расходы
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentTransactions != null && ((IEnumerable<dynamic>)ViewBag.RecentTransactions).Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Тип операции</th>
+                                    <th>Товар</th>
+                                    <th>Количество</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in (IEnumerable<dynamic>)ViewBag.RecentTransactions)
+                                {
+                                    <tr class="@(transaction.Type == "Расход" ? "table-danger" : "table-success")">
+                                        <td class="fw-bold">@transaction.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            @if (transaction.Type == "Приход")
+                                            {
+                                                <span class="badge bg-success">Приход</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Расход</span>
+                                            }
+                                        </td>
+                                        <td>@transaction.ProductName</td>
+                                        <td class="fw-bold">@transaction.Amount</td>
+                                        <td>
+                                            @if (transaction.Type == "Приход")
+                                            {
+                                                <a asp-controller="ProductArrivals" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-controller="ProductArrivals" asp-action="Details" asp-route-id="@transaction.Id" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="ProductExpenses" asp-action="Edit" asp-route-id="@transaction.Id" class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-controller="ProductExpenses" asp-action="Details" asp-route-id="@transaction.Id" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Нет данных о последних операциях</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const labels = @Html.Raw(Json.Serialize(ViewBag.ChartLabels));
+            const arrivalsData = @Html.Raw(Json.Serialize(ViewBag.ChartArrivals));
+            const expensesData = @Html.Raw(Json.Serialize(ViewBag.ChartExpenses));
+
+            const ctx = document.getElementById('inventoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Приход',
+                            data: arrivalsData,
+                            backgroundColor: 'rgba(15, 157, 88, 0.7)',
+                            borderColor: 'rgba(15, 157, 88, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Расход',
+                            data: expensesData,
+                            backgroundColor: 'rgba(219, 68, 55, 0.7)',
+                            borderColor: 'rgba(219, 68, 55, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                font: {
+                                    size: 11
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: {
+                                size: 14
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += new Intl.NumberFormat('ru-RU').format(context.parsed.y);
+                                    label += ' ед.';
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Движение товаров за последние 30 дней',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('.dropdown-item.active').classList.remove('active');
+                    this.classList.add('active');
+                    document.getElementById('periodDropdown').textContent = this.textContent;
+
+                    if (this.textContent.includes('7 дней')) {
+                    } else if (this.textContent.includes('30 дней')) {
+                    }
+                });
+            });
+
+            const todayIndex = labels.length - 1;
+            if (todayIndex >= 0 && todayIndex < labels.length) {
+                const todayElement = document.querySelector(`#inventoryChart canvas`);
+                if (todayElement) {
+                    todayElement.addEventListener('mousemove', function(e) {
+                        const rect = todayElement.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+
+                        if (x > (todayIndex * (rect.width / labels.length)) &&
+                            x < ((todayIndex + 1) * (rect.width / labels.length))) {
+                            this.style.cursor = 'pointer';
+                        } else {
+                            this.style.cursor = 'default';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Складской учет</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler offcanvas-toggle me-2 d-lg-none" type="button" id="sidebarToggle">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-warehouse me-2"></i>Складской учет
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Главная
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Stock" asp-action="Index">
+                                <i class="fas fa-chart-bar me-1"></i>Остатки
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">
+                                <i class="fas fa-boxes me-1"></i>Товары
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ProductArrivals" asp-action="Index">
+                                <i class="fas fa-arrow-alt-circle-down me-1 text-success"></i>Приходы
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ProductExpenses" asp-action="Index">
+                                <i class="fas fa-arrow-alt-circle-up me-1 text-danger"></i>Расходы
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <a class="btn btn-outline-primary me-2" asp-controller="ProductArrivals" asp-action="Create">
+                            <i class="fas fa-plus me-1"></i>Новый приход
+                        </a>
+                        <a class="btn btn-outline-danger" asp-controller="ProductExpenses" asp-action="Create">
+                            <i class="fas fa-plus me-1"></i>Новый расход
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <main class="col" id="mainContent">
+                <div class="container-fluid py-3">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Система складского учета - <a asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                mainContent.classList.toggle('full');
+                document.querySelector('.footer').classList.toggle('full');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarClose.addEventListener('click', toggleSidebar);
+
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isToggleClick = sidebarToggle.contains(event.target);
+
+                    if (!isClickInsideSidebar && !isToggleClick) {
+                        sidebar.classList.remove('show');
+                        mainContent.classList.remove('full');
+                        document.querySelector('.footer').classList.remove('full');
+                    }
+                }
+            });
+
+            const navbarToggler = document.querySelector('.navbar-toggler[data-bs-toggle="collapse"]');
+            navbarToggler?.addEventListener('click', function() {
+                this.querySelector('.navbar-toggler-icon').classList.toggle('open');
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

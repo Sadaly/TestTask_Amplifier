@@ -1,0 +1,6 @@
+@TestTask_Amplifier_HostAddress = http://localhost:5115
+
+GET {{TestTask_Amplifier_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

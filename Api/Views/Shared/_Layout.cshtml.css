@@ -1,0 +1,130 @@
+﻿:root {
+    --primary-color: #3454D1;
+    --secondary-color: #0F9D58;
+    --danger-color: #DB4437;
+    --warning-color: #F4B400;
+    --sidebar-width: 280px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .navbar-nav .nav-link:hover {
+        color: var(--primary-color) !important;
+    }
+
+    .navbar-nav .nav-link.active {
+        color: var(--primary-color) !important;
+        font-weight: 600;
+    }
+
+.sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 1rem;
+    overflow-y: auto;
+    width: var(--sidebar-width);
+    background-color: #fff;
+    border-right: 1px solid #e9ecef;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .sidebar .nav-link {
+        color: #495057;
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: rgba(52, 84, 209, 0.1);
+            color: var(--primary-color);
+        }
+
+        .sidebar .nav-link i {
+            width: 24px;
+            margin-right: 8px;
+            text-align: center;
+        }
+
+.main-content {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+}
+
+    .main-content.full {
+        margin-left: var(--sidebar-width);
+    }
+
+.offcanvas-toggle {
+    display: none;
+}
+
+.card-dashboard {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .card-dashboard:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15) !important;
+    }
+
+.stat-card {
+    border-width: 2px !important;
+}
+
+.footer {
+    background-color: #fff;
+    transition: margin-left 0.3s ease;
+}
+
+    .footer.full {
+        margin-left: var(--sidebar-width);
+    }
+
+@@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+        .sidebar.show {
+            transform: translateX(0);
+            width: 250px;
+        }
+
+    .main-content, .footer {
+        margin-left: 0;
+    }
+
+        .main-content.full, .footer.full {
+            margin-left: 250px;
+        }
+
+    .offcanvas-toggle {
+        display: inline-block;
+    }
+}
